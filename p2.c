@@ -3,39 +3,33 @@
 #include <string.h>
 #include <limits.h>
  
-// a structure to represent a weighted edge in graph
 struct Edge
 {
     int src, dest, weight;
 };
  
-// a structure to represent a connected, directed and weighted graph
 struct Graph
 {
-    // V-> Number of vertices, E-> Number of edges
-    int V, E;
+    int node, edg;
  
-    // graph is represented as an array of edges.
     struct Edge* edge;
 };
  
-// Creates a graph with V vertices and E edges
-struct Graph* createGraph(int V, int E)
+struct Graph* createGraph(int node, int edg)
 {
     struct Graph* graph = (struct Graph*) malloc( sizeof(struct Graph) );
-    graph->V = V;
-    graph->E = E;
+    graph->node = node;
+    graph->edg = edg;
  
-    graph->edge = (struct Edge*) malloc( graph->E * sizeof( struct Edge ) );
+    graph->edge = (struct Edge*) malloc( graph->edg * sizeof( struct Edge ) );
  
     return graph;
 }
- 
-// A utility function used to print the solution
-void printArr(int dist[], int n,int vec[])
+
+void printArr(int dist[], int node,int vec[])
 {
 	int i;
-    for (i = 1; i <= n; ++i)
+    for (i = 1; i <= node; ++i)
     {
     	if(dist[i]==INT_MAX)
     		printf("U\n");
@@ -51,28 +45,27 @@ void printArr(int dist[], int n,int vec[])
     }
 }
  
-// The main function that finds shortest distances from src to all other
-// vertices using Bellman-Ford algorithm.  The function also detects negative
-// weight cycle
+
 void BellmanFord(struct Graph* graph, int src)
 {
-    int V = graph->V;
-    int E = graph->E;
+    int node = graph->node;
+    int edg = graph->edg;
     int i,j;
-    int dist[V+1];
-    int vec[V+1];
+    int dist[node+1];
+    int vec[node+1];
  
-    // Step 1: Initialize distances from src to all other vertices as INFINITE
-    for (i = 1; i <= V; i++)
+
+    for (i = 1; i <= node; i++){
         dist[i] = INT_MAX;
+        vec[i]=0;
+    }
 
     dist[src] = 0;
  
-    // Step 2: Relax all edges |V| - 1 times. A simple shortest path from src
-    // to any other vertex can have at-most |V| - 1 edges
-    for (i = 1; i <= V+1; i++)
+
+    for (i = 1; i <= node+1; i++)
     {
-        for (j = 1; j <= E; j++)
+        for (j = 1; j <= edg; j++)
         {
             int u = graph->edge[j].src;
             int v = graph->edge[j].dest;
@@ -82,40 +75,34 @@ void BellmanFord(struct Graph* graph, int src)
         }
     }
  
-    // Step 3: check for negative-weight cycles.  The above step guarantees
-    // shortest distances if graph doesn't contain negative weight cycle.
-    // If we get a shorter path, then there is a cycle.
-    for (i = 1; i <= E; i++)
+    for(j=0;j<3;j++){
+    for (i = 1; i <= edg; i++)
     {
         int u = graph->edge[i].src;
         int v = graph->edge[i].dest;
         int weight = graph->edge[i].weight;
-        printf("i: %d s: %d -> %d  d: %d -> %d w: %d\n",i,u,dist[u],v,dist[v],weight);
         if (dist[u] != INT_MAX && dist[u] + weight < dist[v]){
-         	vec[v]=1;
+        	dist[v] = dist[u] + weight; 
+         	vec[v]=1; 
         }
     }
+}
  
-    printArr(dist, V,vec);
+    printArr(dist, node, vec);
  
     return;
 }
  
-// Driver program to test above functions
 int main()
 {
 
-    /* Let us create the graph given in above example */
-    int V ;  // Number of vertices in graph
-    int E ;  // Number of edges in graph
-    int i;
-    int src;
-    scanf("%d%d",&V,&E);
+    int node,edg,i,src;
+    scanf("%d%d",&node,&edg);
  	scanf("%d",&src);
 
-    struct Graph* graph = createGraph(V, E);
+    struct Graph* graph = createGraph(node, edg);
 
- 	for(i=1;i<=E;i++){
+ 	for(i=1;i<=edg;i++){
  		scanf("%d%d%d",&graph->edge[i].src,&graph->edge[i].dest,&graph->edge[i].weight);
  	}
  
