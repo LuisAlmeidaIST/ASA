@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+
+#define NVEZES 2
  
 struct Edge
 {
@@ -15,6 +17,8 @@ struct Graph
     struct Edge* edge;
 };
  
+
+
 struct Graph* createGraph(int node, int edg)
 {
     struct Graph* graph = (struct Graph*) malloc( sizeof(struct Graph) );
@@ -26,7 +30,7 @@ struct Graph* createGraph(int node, int edg)
     return graph;
 }
 
-void printArr(int dist[], int node,int vec[])
+void printDist(int dist[], int node,int vec[])
 {
 	int i;
     for (i = 1; i <= node; ++i)
@@ -53,7 +57,8 @@ void BellmanFord(struct Graph* graph, int src)
     int i,j;
     int dist[node+1];
     int vec[node+1];
- 
+    int n_vezes = ((node*NVEZES) - (node/2)) ;
+	 
 
     for (i = 1; i <= node; i++){
         dist[i] = INT_MAX;
@@ -75,7 +80,7 @@ void BellmanFord(struct Graph* graph, int src)
         }
     }
  
-    for(j=0;j<3;j++){
+    for(j=0;j<n_vezes;j++){
     for (i = 1; i <= edg; i++)
     {
         int u = graph->edge[i].src;
@@ -83,12 +88,15 @@ void BellmanFord(struct Graph* graph, int src)
         int weight = graph->edge[i].weight;
         if (dist[u] != INT_MAX && dist[u] + weight < dist[v]){
         	dist[v] = dist[u] + weight; 
-         	vec[v]=1; 
+         	vec[v]=1;
+
+
+
         }
     }
 }
  
-    printArr(dist, node, vec);
+    printDist(dist, node, vec);
  
     return;
 }
